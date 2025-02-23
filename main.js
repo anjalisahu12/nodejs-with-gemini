@@ -5,8 +5,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-// Enable CORS for all origins
-app.use(cors());
+// ✅ Properly configure CORS
+app.use(cors({
+    origin: "*", // Allow all origins
+    methods: "GET,POST,OPTIONS",
+    allowedHeaders: "Content-Type"
+}));
+
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -27,7 +32,9 @@ const generate = async (prompt) => {
     }
 };
 
-// Change API to POST request
+// ✅ Explicitly handle OPTIONS method (for CORS preflight requests)
+app.options('/api/content', cors());
+
 app.post('/api/content', async (req, res) => {
     try {
         const data = req.body.question;
